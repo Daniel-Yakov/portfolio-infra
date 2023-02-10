@@ -22,3 +22,39 @@ variable "az_list" {
   default     = [ "eu-west-3a", "eu-west-3b" ]
   description = "list of AZ to create"
 }
+
+variable "cluster_name" {
+  type        = string
+  default     = "daniel-portfolio-cluster"
+  description = "EKS cluster name"
+}
+
+variable "node_group_name" {
+  type        = string
+  default     = "daniel-portfolio-nodegroup"
+  description = "Node group name"
+}
+
+variable "desired_size" {
+  type        = number
+  default     = 2
+  description = "desired size of ec2 for the node group name"
+}
+
+variable "max_size" {
+  type        = number
+  default     = 3
+  description = "Max size of ec2 for the node group name"
+}
+
+variable "min_size" {
+  type        = number
+  default     = 1
+  description = "Min size of ec2 for the node group name"
+}
+
+variable "max_unavailable" {
+  type        = number
+  default     = 1
+  description = "Number of nodes allowed to not be available (during upgrades for example)"
+}
