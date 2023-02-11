@@ -1,8 +1,11 @@
+# Information on the az of the current region
+data "aws_availability_zones" "az" {}
+
 // Create first subnet
 resource "aws_subnet" "sub1" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.subnet_cidr_block[0]
-  availability_zone = var.az[0]
+  availability_zone = data.aws_availability_zones.az.names[0]
   map_public_ip_on_launch = true
 
   tags = {
@@ -14,7 +17,7 @@ resource "aws_subnet" "sub1" {
 resource "aws_subnet" "sub2" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.subnet_cidr_block[1]
-  availability_zone = var.az[1]
+  availability_zone = data.aws_availability_zones.az.names[1]
   map_public_ip_on_launch = true
 
   tags = {

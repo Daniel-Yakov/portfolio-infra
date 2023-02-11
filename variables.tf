@@ -17,12 +17,6 @@ variable "subnets_name" {
   description = "list of subnets names to create"
 }
 
-variable "az_list" {
-  type        = list(string)
-  default     = [ "eu-west-3a", "eu-west-3b" ]
-  description = "list of AZ to create"
-}
-
 variable "cluster_name" {
   type        = string
   default     = "daniel-portfolio-cluster"

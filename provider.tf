@@ -9,6 +9,11 @@ terraform {
       source = "hashicorp/helm"
       version = "2.8.0"
     }
+
+    tls = {
+      source = "hashicorp/tls"
+      version = "4.0.4"
+    }
   }
 
   // change the state file storage place to s3

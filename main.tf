@@ -3,7 +3,6 @@ module "vpc_network" {
 
   vpc_name = "${var.vpc_name}"
   subnets_name = var.subnets_name
-  az = var.az_list
 }
 
 module "eks" {
@@ -34,4 +33,20 @@ resource "helm_release" "argocd" {
   # ]
 
   depends_on = [ module.eks ]
+}
+
+resource "helm_release" "sealed_secrets" {
+  name  = "sealed-secrets"
+
+  repository       = "https://bitnami-labs.github.io/sealed-secrets"
+  chart            = "sealed-secrets"
+  namespace        = "security"
+  version          = "2.7.3"
+  create_namespace = true
+
+  # values = [
+  #   file("argocd/application.yaml")
+  # ]
+
+  depends_on = [ helm_release.argocd ]
 }

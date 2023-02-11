@@ -11,12 +11,6 @@ variable "subnets_name" {
   type        = list(string)
 }
 
-variable "az" {
-  description = "Availability Zone"
-  type        = list(string)
-}
-
-
 ###### optional/defualt ######
 # vpc.tf vars
 variable "vpc_cidr_block" {
