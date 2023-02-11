@@ -19,3 +19,19 @@ module "eks" {
     max_unavailable = var.max_unavailable
   }
 }
+
+resource "helm_release" "argocd" {
+  name  = "argocd"
+
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  namespace        = "argocd"
+  version          = "5.20.3"
+  create_namespace = true
+
+  # values = [
+  #   file("argocd/application.yaml")
+  # ]
+
+  depends_on = [ module.eks ]
+}

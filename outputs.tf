@@ -11,3 +11,12 @@ output "eks_cluster" {
     node_group_id = module.eks.node_group_id
   }
 }
+
+output "kube_config_cluster_name" {
+  value = module.eks.cluster_name
+}
+
+output "kube_config_region" {
+  value = var.region
+  
+}
