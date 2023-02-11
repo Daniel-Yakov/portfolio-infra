@@ -52,3 +52,9 @@ variable "max_unavailable" {
   default     = 1
   description = "Number of nodes allowed to not be available (during upgrades for example)"
 }
+
+variable "namespace" {
+  type = string
+  default = "security"
+  description = "Namespace for the sealed secrets to be deployed"
+}

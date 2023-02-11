@@ -17,6 +17,16 @@ module "eks" {
     min_size     = var.min_size
     max_unavailable = var.max_unavailable
   }
+
+  depends_on = [ module.vpc_network ]
+}
+
+module "sealed-secrets" {
+  source = "./modules/sealed-secret"
+
+  namespace = var.namespace
+
+  depends_on = [ module.eks ]
 }
 
 resource "helm_release" "argocd" {
@@ -33,20 +43,4 @@ resource "helm_release" "argocd" {
   # ]
 
   depends_on = [ module.eks ]
-}
-
-resource "helm_release" "sealed_secrets" {
-  name  = "sealed-secrets"
-
-  repository       = "https://bitnami-labs.github.io/sealed-secrets"
-  chart            = "sealed-secrets"
-  namespace        = "security"
-  version          = "2.7.3"
-  create_namespace = true
-
-  # values = [
-  #   file("argocd/application.yaml")
-  # ]
-
-  depends_on = [ helm_release.argocd ]
 }

@@ -5,6 +5,11 @@ terraform {
       version = "4.49.0"
     }
 
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.17.0"
+    }
+
     helm = {
       source = "hashicorp/helm"
       version = "2.8.0"
@@ -34,6 +39,16 @@ provider "aws" {
       expiration_date = "01-04-2023"
     }
   }
+}
+
+provider "kubernetes" {
+  host                   = module.eks.endpoint
+    cluster_ca_certificate = base64decode(module.eks.kubeconfig-certificate-authority-data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1"
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+      command     = "aws"
+    }
 }
 
 provider "helm" {
