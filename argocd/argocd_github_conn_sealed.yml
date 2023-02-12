@@ -4,7 +4,7 @@ metadata:
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
   creationTimestamp: null
-  name: private-repo
+  name: gitops-config-private-repo
   namespace: argocd
 spec:
   encryptedData:

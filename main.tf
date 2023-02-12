@@ -50,8 +50,10 @@ resource "helm_release" "argocd-apps" {
   version = "0.0.8"  
 
   values = [
-    file("argocd/employees-application.yml")
+    file("argocd/applications.yml")
   ]
 
-  depends_on = [ helm_release.argocd ]
+  depends_on = [
+    helm_release.argocd
+  ]
 }
