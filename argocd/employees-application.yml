@@ -1,0 +1,17 @@
+applications:
+ - name: employees
+   namespace: argocd
+   project: default
+   source:
+     repoURL: git@github.com:Daniel-Yakov/employees-gitops-config.git
+     targetRevision: HEAD
+     path: app
+   destination:
+     server: https://kubernetes.default.svc
+     namespace: app
+   syncPolicy:
+     automated:
+       prune: true
+       selfHeal: true
+     syncOptions:
+      - CreateNamespace=true

@@ -38,9 +38,20 @@ resource "helm_release" "argocd" {
   version          = "5.20.3"
   create_namespace = true
 
-  # values = [
-  #   file("argocd/application.yaml")
-  # ]
-
   depends_on = [ module.eks ]
+}
+
+resource "helm_release" "argocd-apps" {
+  name       = "argocd-apps"
+  
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argocd-apps"
+  namespace  = "argocd"
+  version = "0.0.8"  
+
+  values = [
+    file("argocd/employees-application.yml")
+  ]
+
+  depends_on = [ helm_release.argocd ]
 }

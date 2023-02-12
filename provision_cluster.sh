@@ -11,4 +11,4 @@ aws eks --region "$(terraform output -raw kube_config_region)" update-kubeconfig
 kubectl get -n argocd secret/argocd-initial-admin-secret -o=jsonpath='{.data.password}' | base64 -d
 
 # Add repository to argocd
-kubectl apply -f sealed_secret_connection.yml
+kubectl apply -f argocd/argocd_github_conn_sealed.yml

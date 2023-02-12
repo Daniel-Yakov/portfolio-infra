@@ -1,4 +1,4 @@
 .terraform/
 .terraform.lock.hcl
-argocd-repo_connection.yml
+argocd_github_conn.yml
 keys/
