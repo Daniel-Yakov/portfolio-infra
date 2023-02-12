@@ -21,6 +21,14 @@ module "eks" {
   depends_on = [ module.vpc_network ]
 }
 
+module "cert_manager_tls_role" {
+  source = "./modules/tls-role"
+
+  cert_manager_solver_role_name = "daniel-cert-manager-route53"
+  node_group_role_arn = module.eks.node_group_arn
+  hosted_zone_id = "Z09020131AOXZ3LFNC5KB"
+}
+
 module "sealed-secrets" {
   source = "./modules/sealed-secret"
 
