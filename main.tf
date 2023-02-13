@@ -5,6 +5,7 @@ module "vpc_network" {
   subnets_name = var.subnets_name
 }
 
+# EKS cluster
 module "eks" {
   source = "./modules/eks"
 
@@ -21,6 +22,7 @@ module "eks" {
   depends_on = [ module.vpc_network ]
 }
 
+# the Role that allows to cert-manager resolve the tls challenge (access to route53)
 module "cert_manager_tls_role" {
   source = "./modules/tls-role"
 
@@ -29,6 +31,7 @@ module "cert_manager_tls_role" {
   hosted_zone_id = "Z09020131AOXZ3LFNC5KB"
 }
 
+# create the secret for sealed-secret key
 module "sealed-secrets" {
   source = "./modules/sealed-secret"
 
@@ -37,6 +40,7 @@ module "sealed-secrets" {
   depends_on = [ module.eks ]
 }
 
+# ArgoCD
 resource "helm_release" "argocd" {
   name  = "argocd"
 
@@ -49,8 +53,29 @@ resource "helm_release" "argocd" {
   depends_on = [ module.eks ]
 }
 
-resource "helm_release" "argocd-apps" {
-  name       = "argocd-apps"
+# Config the connection to the github repository
+resource "kubernetes_secret" "argocd-github-connection" {  
+  metadata {
+    name      = "gitops-config-private-repo"
+    namespace = "argocd"
+    labels = {
+      "argocd.argoproj.io/secret-type" = "repository"
+    }
+  }
+  data = {
+    "type" = "git"
+    "url" = "git@github.com:Daniel-Yakov/employees-gitops-config.git"
+    "sshPrivateKey" = file("~/.ssh/argocd3")
+  }
+
+  depends_on = [
+    helm_release.argocd
+  ]
+}
+
+# Create infra apps
+resource "helm_release" "argocd-apps-infra" {
+  name       = "argocd-apps-infra"
   
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argocd-apps"
@@ -58,10 +83,28 @@ resource "helm_release" "argocd-apps" {
   version = "0.0.8"  
 
   values = [
-    file("argocd/applications.yml")
+    file("argocd/infra-applications.yml")
   ]
 
   depends_on = [
     helm_release.argocd
+  ]
+}
+
+# Create employees app
+resource "helm_release" "argocd-apps-employees" {
+  name       = "argocd-apps-employees"
+  
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argocd-apps"
+  namespace  = "argocd"
+  version = "0.0.8"  
+
+  values = [
+    file("argocd/employees.yml")
+  ]
+
+  depends_on = [
+    helm_release.argocd-apps-infra
   ]
 }

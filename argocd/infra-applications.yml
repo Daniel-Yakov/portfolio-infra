@@ -1,0 +1,14 @@
+applications:
+  - name: infra
+    namespace: argocd
+    project: default
+    source:
+      repoURL: git@github.com:Daniel-Yakov/employees-gitops-config.git
+      targetRevision: HEAD
+      path: infra-apps
+    destination:
+      server: https://kubernetes.default.svc
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true

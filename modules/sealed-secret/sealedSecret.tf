@@ -17,14 +17,3 @@ resource "kubernetes_secret" "sealed-secrets-key" {
   }
   type = "kubernetes.io/tls"
 }
-
-resource "helm_release" "sealed-secrets" {
-  depends_on = [ kubernetes_secret.sealed-secrets-key ]
-  
-  name       = "sealed-secrets"
-
-  repository = "https://bitnami-labs.github.io/sealed-secrets"
-  chart      = "sealed-secrets"
-  namespace  = var.namespace
-  version    = "2.7.3"
-}
