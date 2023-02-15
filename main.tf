@@ -13,10 +13,15 @@ module "eks" {
   subnets = module.vpc_network.subnets_ids
   node_group = {
     name = var.node_group_name
+    instance_types = var.instance_types
     desired_size = var.desired_size
     max_size     = var.max_size
     min_size     = var.min_size
     max_unavailable = var.max_unavailable
+  }
+  csi_driver = {
+    addon_version = var.addon_version
+    role_name = var.csi_driver_role_name
   }
 
   depends_on = [ module.vpc_network ]
@@ -26,85 +31,52 @@ module "eks" {
 module "cert_manager_tls_role" {
   source = "./modules/tls-role"
 
-  cert_manager_solver_role_name = "daniel-cert-manager-route53"
+  cert_manager_solver_role_name = var.cert_manager_solver_role_name
   node_group_role_arn = module.eks.node_group_arn
-  hosted_zone_id = "Z09020131AOXZ3LFNC5KB"
+  hosted_zone_id = var.hosted_zone_id
+  
+  depends_on = [ module.eks ]
 }
 
 # create the secret for sealed-secret key
 module "sealed-secrets" {
   source = "./modules/sealed-secret"
 
-  namespace = var.namespace
+  sealed_secrets_key_name = var.sealed_secrets_key_name
+  namespace = var.sealed_secret_namespace
 
   depends_on = [ module.eks ]
 }
 
-# ArgoCD
-resource "helm_release" "argocd" {
-  name  = "argocd"
+# Create and config ArgoCD and Applications
+module "argocd" {
+  source = "./modules/argocd"
 
-  repository       = "https://argoproj.github.io/argo-helm"
-  chart            = "argo-cd"
-  namespace        = "argocd"
-  version          = "5.20.3"
-  create_namespace = true
+  argocd_helm_chart = {
+    release_name = var.argocd_helm_chart_release_name
+    repository = var.argocd_helm_chart_repository
+    chart = var.argocd_helm_chart_chart
+    namespace = var.argocd_helm_chart_namespace
+    version = var.argocd_helm_chart_version
+    create_namespace = var.argocd_helm_chart_create_namespace
+  } 
+
+  github_connection = {
+    name = var.github_connection_name
+    namespace = var.github_connection_namespace
+    github_url = var.github_connection_url
+    path_to_ssh_key = var.github_connection_path_to_ssh_key
+  }
+
+  argocd_apps_helm_chart = {
+    release_name = var.argocd_apps_helm_chart_release_name
+    repository = var.argocd_apps_helm_chart_repository
+    chart = var.argocd_apps_helm_chart_chart
+    namespace = var.argocd_apps_helm_chart_namespace
+    version = var.argocd_apps_helm_chart_version
+    create_namespace = var.argocd_apps_helm_chart_create_namespace
+    path_to_application_file = var.argocd_apps_helm_chart_path_to_application_file
+  }
 
   depends_on = [ module.eks ]
-}
-
-# Config the connection to the github repository
-resource "kubernetes_secret" "argocd-github-connection" {  
-  metadata {
-    name      = "gitops-config-private-repo"
-    namespace = "argocd"
-    labels = {
-      "argocd.argoproj.io/secret-type" = "repository"
-    }
-  }
-  data = {
-    "type" = "git"
-    "url" = "git@github.com:Daniel-Yakov/employees-gitops-config.git"
-    "sshPrivateKey" = file("~/.ssh/argocd3")
-  }
-
-  depends_on = [
-    helm_release.argocd
-  ]
-}
-
-# Create infra apps
-resource "helm_release" "argocd-apps-infra" {
-  name       = "argocd-apps-infra"
-  
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argocd-apps"
-  namespace  = "argocd"
-  version = "0.0.8"  
-
-  values = [
-    file("argocd/infra-applications.yml")
-  ]
-
-  depends_on = [
-    helm_release.argocd
-  ]
-}
-
-# Create employees app
-resource "helm_release" "argocd-apps-employees" {
-  name       = "argocd-apps-employees"
-  
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argocd-apps"
-  namespace  = "argocd"
-  version = "0.0.8"  
-
-  values = [
-    file("argocd/employees.yml")
-  ]
-
-  depends_on = [
-    helm_release.argocd-apps-infra
-  ]
 }

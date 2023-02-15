@@ -8,7 +8,7 @@ resource "kubernetes_secret" "sealed-secrets-key" {
   depends_on = [ kubernetes_namespace.sealed-secrets-ns ]
   
   metadata {
-    name      = "sealed-secrets-key"
+    name      = var.sealed_secrets_key_name
     namespace = var.namespace
   }
   data = {
