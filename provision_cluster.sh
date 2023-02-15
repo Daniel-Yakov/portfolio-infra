@@ -1,7 +1,7 @@
 #!/bin/bash
 
 terraform init
-terraform apply
+terraform apply -var-file="production.tfvars"
 
 # Congifure kubectl to work with created cluster
 aws eks --region "$(terraform output -raw kube_config_region)" update-kubeconfig \

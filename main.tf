@@ -11,18 +11,8 @@ module "eks" {
 
   eks_cluster_name = var.cluster_name
   subnets = module.vpc_network.subnets_ids
-  node_group = {
-    name = var.node_group_name
-    instance_types = var.instance_types
-    desired_size = var.desired_size
-    max_size     = var.max_size
-    min_size     = var.min_size
-    max_unavailable = var.max_unavailable
-  }
-  csi_driver = {
-    addon_version = var.addon_version
-    role_name = var.csi_driver_role_name
-  }
+  node_group = var.node_group
+  csi_driver = var.csi_driver
 
   depends_on = [ module.vpc_network ]
 }
@@ -52,31 +42,9 @@ module "sealed-secrets" {
 module "argocd" {
   source = "./modules/argocd"
 
-  argocd_helm_chart = {
-    release_name = var.argocd_helm_chart_release_name
-    repository = var.argocd_helm_chart_repository
-    chart = var.argocd_helm_chart_chart
-    namespace = var.argocd_helm_chart_namespace
-    version = var.argocd_helm_chart_version
-    create_namespace = var.argocd_helm_chart_create_namespace
-  } 
-
-  github_connection = {
-    name = var.github_connection_name
-    namespace = var.github_connection_namespace
-    github_url = var.github_connection_url
-    path_to_ssh_key = var.github_connection_path_to_ssh_key
-  }
-
-  argocd_apps_helm_chart = {
-    release_name = var.argocd_apps_helm_chart_release_name
-    repository = var.argocd_apps_helm_chart_repository
-    chart = var.argocd_apps_helm_chart_chart
-    namespace = var.argocd_apps_helm_chart_namespace
-    version = var.argocd_apps_helm_chart_version
-    create_namespace = var.argocd_apps_helm_chart_create_namespace
-    path_to_application_file = var.argocd_apps_helm_chart_path_to_application_file
-  }
+  argocd_helm_chart = var.argocd_helm_chart
+  github_connection = var.github_connection
+  argocd_apps_helm_chart = var.argocd_apps_helm_chart
 
   depends_on = [ module.eks ]
 }
