@@ -10,7 +10,7 @@ cluster_name = "daniel-portfolio-cluster"
 # node group
 node_group = {
     name = "daniel-portfolio-nodegroup"
-    instance_types = [ "t3a.2xlarge" ]
+    instance_types = [ "t3a.xlarge" ]
     desired_size = 3
     max_size     = 3
     min_size     = 1
