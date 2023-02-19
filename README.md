@@ -2,7 +2,9 @@
 ## Infrastracture repository
 This repository contains all the code necessary for provisioning the infrastructure required to run the application in the employees-gitops-config repository.
 
-The infrastructure includes an EKS cluster with Kubernetes infrastructure (see architecture.jpg). The Kubernetes infrastructure is managed using Helm charts, which are stored in the employees-gitops-config repository.
+The infrastructure includes an EKS cluster with Kubernetes infrastructure.
+![Project architecture image](architecture.jpg)
+The Kubernetes infrastructure is managed using Helm charts, which are stored in the employees-gitops-config repository.
 
 To build the infrastructure, run the provision_cluster.sh script.
 
