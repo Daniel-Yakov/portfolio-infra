@@ -47,7 +47,7 @@ github_connection = {
     name = "gitops-config-private-repo"
     namespace = "argocd"
     github_url = "git@github.com:Daniel-Yakov/employees-gitops-config.git"
-    path_to_ssh_key = "~/.ssh/argocd3"
+    path_to_ssh_key = "~/.ssh/argocd"
 }
 
 # argocd_apps_helm_chart
