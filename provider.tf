@@ -25,7 +25,7 @@ terraform {
   backend "s3"{
     bucket = "daniel-managed-36236"
     key    = "terraform.tfstate"
-    region = "eu-west-3"
+    region = "eu-central-1"
   }
 }
 
@@ -35,8 +35,6 @@ provider "aws" {
   default_tags {
     tags = {
       Owner           = "Daniel Yakov"
-      bootcamp        = "17"
-      expiration_date = "01-04-2023"
     }
   }
 }

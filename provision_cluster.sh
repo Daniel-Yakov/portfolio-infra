@@ -18,7 +18,7 @@ while [[ ! "$elb_dns_name" =~ .elb. ]]; do
   sleep 2
 done
 
-# cread the record (json format)
+# create the record (json format)
 cat > record.json <<EOF
 {
     "Comment": "Update record",
@@ -28,7 +28,7 @@ cat > record.json <<EOF
                     "Name": "danielemployees.cloud",
                     "Type": "A",
                     "AliasTarget": {
-                        "HostedZoneId": "Z3Q77PNBQS71R4",
+                        "HostedZoneId": "Z215JYRZR1TBD5",
                         "DNSName": "dualstack.$elb_dns_name",
                         "EvaluateTargetHealth": true
         }
@@ -37,4 +37,4 @@ cat > record.json <<EOF
 EOF
 
 # update record in aws route 53
-aws route53 change-resource-record-sets --hosted-zone-id Z09020131AOXZ3LFNC5KB --change-batch file://record.json
+aws route53 change-resource-record-sets --hosted-zone-id Z008113119LG8LRMHDNY0 --change-batch file://record.json

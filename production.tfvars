@@ -1,4 +1,4 @@
-region = "eu-west-3"
+region = "eu-central-1"
 
 ############################## vpc module vars ##############################
 vpc_name  = "daniel-eks"
@@ -10,9 +10,9 @@ cluster_name = "daniel-portfolio-cluster"
 # node group
 node_group = {
     name = "daniel-portfolio-nodegroup"
-    instance_types = [ "t3a.xlarge" ]
-    desired_size = 3
-    max_size     = 3
+    instance_types = [ "t3.xlarge" ]
+    desired_size = 2
+    max_size     = 2
     min_size     = 1
     max_unavailable = 1
 }
@@ -25,7 +25,7 @@ csi_driver = {
 
 ############################## cert_manager_tls_role module vars ##############################
 cert_manager_solver_role_name = "daniel-cert-manager-route53"
-hosted_zone_id = "Z09020131AOXZ3LFNC5KB"
+hosted_zone_id = "Z008113119LG8LRMHDNY0"
 
 ############################## sealed-secrets module vars ##############################
 sealed_secrets_key_name = "sealed-secrets-key"
